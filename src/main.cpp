@@ -2,51 +2,60 @@
 #include <vector>
 
 char player_1 = 'X';
-  char player_2 = 'O';
-  int coordinates_1;
-  int coordinates_2;
-  bool bFaild; 
-  char field[3][3] = {{'.','.','.'}, 
+char player_2 = 'O';
+int coordinates_1;
+int coordinates_2;
+int countStep = 0;
+bool bWon = false;
+char field[3][3] = {{'.','.','.'}, 
                        {'.','.','.'},
                        {'.','.','.'}};
 
-
-bool winner(char arr[3][3]){
+bool winner(char arr[3][3], char ch, int countStep){
+  if(countStep == 9){
+    std::cout << "Draw" << std::endl;
+    return true;
+  }
   for(int i = 0; i < 3; i++){
     for(int j = 0; j < 3; j++){
-      if(((arr[0][0] == 'X') && (arr[0][1] == 'X') && (arr[0][2] == 'X')) || 
-         ((arr[1][0] == 'X') && (arr[1][1] == 'X') && (arr[1][2] == 'X')) ||
-         ((arr[2][0] == 'X') && (arr[2][1] == 'X') && (arr[2][2] == 'X')) ||
+      if(((arr[i][0] == ch) && (arr[i][1] == ch) && (arr[i][2] == ch)) || 
+        //  ((arr[1][0] == ch) && (arr[1][1] == ch) && (arr[1][2] == ch)) ||
+        //  ((arr[2][0] == ch) && (arr[2][1] == ch) && (arr[2][2] == ch)) ||
+ 
+         ((arr[0][j] == ch) && (arr[1][j] == ch) && (arr[2][j] == ch)) ||
+        //  ((arr[0][1] == ch) && (arr[1][1] == ch) && (arr[2][1] == ch)) ||
+        //  ((arr[0][2] == ch) && (arr[1][2] == ch) && (arr[2][2] == ch)) ||
 
-         ((arr[0][0] == 'X') && (arr[1][0] == 'X') && (arr[2][0] == 'X')) ||
-         ((arr[0][1] == 'X') && (arr[1][1] == 'X') && (arr[2][1] == 'X')) ||
-         ((arr[0][2] == 'X') && (arr[1][2] == 'X') && (arr[2][2] == 'X')) ||
-
-         ((arr[0][0] == 'X') && (arr[1][1] == 'X') && (arr[2][2] == 'X')) ||
-         ((arr[2][0] == 'X') && (arr[1][1] == 'X') && (arr[0][2] == 'X'))){
-        std::cout << "Player 1 won" << std::endl;
-        return true;
-      }else if(((arr[0][0] == 'O') && (arr[0][1] == 'O') && (arr[0][2] == 'O')) || 
-               ((arr[1][0] == 'O') && (arr[1][1] == 'O') && (arr[1][2] == 'O')) ||
-               ((arr[2][0] == 'O') && (arr[2][1] == 'O') && (arr[2][2] == 'O')) ||
-
-               ((arr[0][0] == 'O') && (arr[1][0] == 'O') && (arr[2][0] == 'O')) ||
-               ((arr[0][1] == 'O') && (arr[1][1] == 'O') && (arr[2][1] == 'O')) ||
-               ((arr[0][2] == 'O') && (arr[1][2] == 'O') && (arr[2][2] == 'O')) ||
-
-               ((arr[0][0] == 'O') && (arr[1][1] == 'O') && (arr[2][2] == 'O')) ||
-               ((arr[2][0] == 'O') && (arr[1][1] == 'O') && (arr[0][2] == 'O'))){
-                std::cout << "Player 2 won" << std::endl;
-                return true;
-      }
-      else {
-        // std::cout << "Draw" << std::endl;
+         ((arr[0][0] == ch) && (arr[1][1] == ch) && (arr[2][2] == ch)) ||
+         ((arr[2][0] == ch) && (arr[1][1] == ch) && (arr[0][2] == ch))){
+           if(ch == 'X'){
+            std::cout << "Player 1 won" << std::endl;
+            bWon = true;
+            return true;
+           }else {
+             std::cout << "Player 2 won" << std::endl;
+             bWon = true;
+             return true;
+           }
+      }else {
         return false;
       }
     }    
   }
 }
-
+bool checkingCell(int coordinates_1, int coordinates_2, char field[3][3]){
+  if((coordinates_1 < 3 && coordinates_1 > -1) && (coordinates_2 < 3 && coordinates_2 > -1)){
+    if((field[coordinates_1][coordinates_2] != 'X') && (field[coordinates_1][coordinates_2] != 'O')){
+      return true;
+    }else{
+      std::cout << "This cell is occupied" << std::endl;
+      return false;
+    }
+  }else{
+    std::cout << "Coordinate error" << std::endl;
+    return false;
+  } 
+}
 void print(char arrShow[3][3]){
    for(int i = 0; i < 3; i++){
     for(int j = 0; j < 3; j++){
@@ -57,50 +66,55 @@ void print(char arrShow[3][3]){
 }
 
 void player(){
-  while (!winner(field))  {
+  while (true){
     std::cout << "Player's turn: 1" << std::endl;
     std::cin >> coordinates_1;
     std::cin >> coordinates_2;
-    if(field[coordinates_1][coordinates_2] != 'X' && 
-       field[coordinates_1][coordinates_2] != 'O'){
-          field[coordinates_1][coordinates_2] = player_1;
-          print(field);
-          if(winner(field) == true){
-            break;
-          }
-    }else{
-      std::cout << "This cell is occupied" << std::endl;
-      // bFaild = true;
-      // player();
-      break;
-    }
-      std::cout << "Player's turn: 2" << std::endl;
-      std::cin >> coordinates_1;
-      std::cin >> coordinates_2;
+    if((coordinates_1 < 3 && coordinates_1 > -1) && 
+      (coordinates_2 < 3 && coordinates_2 > -1)){
       if(field[coordinates_1][coordinates_2] != 'X' && 
         field[coordinates_1][coordinates_2] != 'O'){
+        // if(!checkingCell(coordinates_1, coordinates_2, field)){
+          countStep++;
+          field[coordinates_1][coordinates_2] = player_1;
+          print(field);
+          if(winner(field, 'X', countStep)){
+            break;
+          }
+        // }
+      }else{
+        std::cout << "This cell is occupied" << std::endl;
+      }
+    }else{
+      std::cout << "Coordinate error" << std::endl;
+    }
+
+
+    std::cout << "Player's turn: 2 " << std::endl;
+    std::cin >> coordinates_1;
+    std::cin >> coordinates_2;
+    if((coordinates_1 < 3 && coordinates_1 > -1) && 
+      (coordinates_2 < 3 && coordinates_2 > -1)){
+    if(field[coordinates_1][coordinates_2] != 'X' && 
+       field[coordinates_1][coordinates_2] != 'O'){
+        countStep++;
         field[coordinates_1][coordinates_2] = player_2;
         print(field);
-        if(winner(field) == true){
+        if(winner(field, 'O', countStep)){
           break;
         }
-      }else {
+      }else{
         std::cout << "This cell is occupied" << std::endl;
-      // bFaild = true;
-      // player();
-      break;
       }
+    }else{
+      std::cout << "Coordinate error" << std::endl;
     }
   }
+}
 
 int main(){
   std::cout << "Tic-tac-toe_v.2" << std::endl;
-  player();
-  // if(bFaild){
-  //   player();
-  //   bFaild = false;
-  // } 
-  
+  player();  
   return 0;
 }
 
