@@ -8,54 +8,63 @@ int coordinates_2;
 int countStep = 0;
 bool bWon = false;
 char field[3][3] = {{'.','.','.'}, 
-                       {'.','.','.'},
-                       {'.','.','.'}};
+                    {'.','.','.'},
+                    {'.','.','.'}};
 
-bool winner(char arr[3][3], char ch, int countStep){
+// bool isWinner(char arr[3][3], char ch, int countStep){
+//   if(countStep == 9){
+//     std::cout << "Draw" << std::endl;
+//     return true;
+//   }
+//   for(int i = 0; i < 3; i++){
+//     for(int j = 0; j < 3; j++){
+//       if(((arr[i][0] == ch) && (arr[i][1] == ch) && (arr[i][2] == ch)) || 
+//         //  ((arr[1][0] == ch) && (arr[1][1] == ch) && (arr[1][2] == ch)) ||
+//         //  ((arr[2][0] == ch) && (arr[2][1] == ch) && (arr[2][2] == ch)) ||
+ 
+//          ((arr[0][j] == ch) && (arr[1][j] == ch) && (arr[2][j] == ch)) ||
+//         //  ((arr[0][1] == ch) && (arr[1][1] == ch) && (arr[2][1] == ch)) ||
+//         //  ((arr[0][2] == ch) && (arr[1][2] == ch) && (arr[2][2] == ch)) ||
+
+//          ((arr[0][0] == ch) && (arr[1][1] == ch) && (arr[2][2] == ch)) ||
+//          ((arr[2][0] == ch) && (arr[1][1] == ch) && (arr[0][2] == ch))){
+//            if(ch == 'X'){
+//             std::cout << "Player 1 won" << std::endl;
+//             bWon = true;
+//             return true;
+//            }else {
+//              std::cout << "Player 2 won" << std::endl;
+//              bWon = true;
+//              return true;
+//            }
+//       }else {
+//         return false;
+//       }
+//     }    
+//   }
+// }
+
+bool isWinner(char ch, int countStep){
   if(countStep == 9){
     std::cout << "Draw" << std::endl;
     return true;
   }
-  for(int i = 0; i < 3; i++){
-    for(int j = 0; j < 3; j++){
-      if(((arr[i][0] == ch) && (arr[i][1] == ch) && (arr[i][2] == ch)) || 
-        //  ((arr[1][0] == ch) && (arr[1][1] == ch) && (arr[1][2] == ch)) ||
-        //  ((arr[2][0] == ch) && (arr[2][1] == ch) && (arr[2][2] == ch)) ||
- 
-         ((arr[0][j] == ch) && (arr[1][j] == ch) && (arr[2][j] == ch)) ||
-        //  ((arr[0][1] == ch) && (arr[1][1] == ch) && (arr[2][1] == ch)) ||
-        //  ((arr[0][2] == ch) && (arr[1][2] == ch) && (arr[2][2] == ch)) ||
-
-         ((arr[0][0] == ch) && (arr[1][1] == ch) && (arr[2][2] == ch)) ||
-         ((arr[2][0] == ch) && (arr[1][1] == ch) && (arr[0][2] == ch))){
-           if(ch == 'X'){
-            std::cout << "Player 1 won" << std::endl;
-            bWon = true;
-            return true;
-           }else {
-             std::cout << "Player 2 won" << std::endl;
-             bWon = true;
-             return true;
-           }
-      }else {
-        return false;
-      }
-    }    
+  for (int i = 0; i < 3; ++i) {
+    bool all_match_horizontal = true;
+    bool all_match_vertical = true;
+    for (int j = 0; j < 3; ++j) {
+      if (field[i][j] != ch)
+        all_match_horizontal = false;
+      if (field[j][i] != ch)
+        all_match_vertical = false;
+    }
+    if (all_match_horizontal || all_match_vertical) {
+      std::cout << "YOU WIN!" << std::endl;
+      return true;
+    }else return false;
   }
 }
-bool checkingCell(int coordinates_1, int coordinates_2, char field[3][3]){
-  if((coordinates_1 < 3 && coordinates_1 > -1) && (coordinates_2 < 3 && coordinates_2 > -1)){
-    if((field[coordinates_1][coordinates_2] != 'X') && (field[coordinates_1][coordinates_2] != 'O')){
-      return true;
-    }else{
-      std::cout << "This cell is occupied" << std::endl;
-      return false;
-    }
-  }else{
-    std::cout << "Coordinate error" << std::endl;
-    return false;
-  } 
-}
+
 void print(char arrShow[3][3]){
    for(int i = 0; i < 3; i++){
     for(int j = 0; j < 3; j++){
@@ -65,56 +74,39 @@ void print(char arrShow[3][3]){
   }
 }
 
-void player(){
-  while (true){
-    std::cout << "Player's turn: 1" << std::endl;
+bool stepPlayer(char ch){
+   do {
     std::cin >> coordinates_1;
     std::cin >> coordinates_2;
-    if((coordinates_1 < 3 && coordinates_1 > -1) && 
-      (coordinates_2 < 3 && coordinates_2 > -1)){
-      if(field[coordinates_1][coordinates_2] != 'X' && 
-        field[coordinates_1][coordinates_2] != 'O'){
-        // if(!checkingCell(coordinates_1, coordinates_2, field)){
-          countStep++;
-          field[coordinates_1][coordinates_2] = player_1;
-          print(field);
-          if(winner(field, 'X', countStep)){
-            break;
-          }
-        // }
-      }else{
-        std::cout << "This cell is occupied" << std::endl;
-      }
-    }else{
-      std::cout << "Coordinate error" << std::endl;
-    }
-
-
-    std::cout << "Player's turn: 2 " << std::endl;
-    std::cin >> coordinates_1;
-    std::cin >> coordinates_2;
-    if((coordinates_1 < 3 && coordinates_1 > -1) && 
-      (coordinates_2 < 3 && coordinates_2 > -1)){
-    if(field[coordinates_1][coordinates_2] != 'X' && 
-       field[coordinates_1][coordinates_2] != 'O'){
+    }while(((coordinates_1 > 2 || coordinates_1 < 0) || 
+      (coordinates_2 > 2 || coordinates_2 < 0)) || 
+       (field[coordinates_1][coordinates_2] == 'X' 
+        && (field[coordinates_1][coordinates_2] == 'O')));
+    // if(field[coordinates_1][coordinates_2] != 'X' && 
+    //    field[coordinates_1][coordinates_2] != 'O'){
         countStep++;
-        field[coordinates_1][coordinates_2] = player_2;
+        field[coordinates_1][coordinates_2] = ch;
         print(field);
-        if(winner(field, 'O', countStep)){
-          break;
+        if(isWinner(ch, countStep)){
+          return true;
         }
-      }else{
-        std::cout << "This cell is occupied" << std::endl;
-      }
-    }else{
-      std::cout << "Coordinate error" << std::endl;
-    }
-  }
+      // }else{
+      //   std::cout << "This cell is occupied" << std::endl;
+      // }
 }
 
 int main(){
   std::cout << "Tic-tac-toe_v.2" << std::endl;
-  player();  
+  while(true){
+    std::cout << "Player's turn: 1" << std::endl;
+    if(stepPlayer(player_1)){
+      break;
+    } 
+    std::cout << "Player's turn: 2 " << std::endl;
+    if(stepPlayer(player_2)){
+      break;
+    } 
+  }
   return 0;
 }
 
